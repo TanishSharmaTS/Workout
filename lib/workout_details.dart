@@ -1,15 +1,29 @@
 import 'package:flutter/material.dart';
 
+import 'exercise_details.dart';
 
-class WorkoutDetailPage extends StatelessWidget {
+class WorkoutDetailPage extends StatefulWidget {
   final String workoutType;
 
   WorkoutDetailPage({required this.workoutType});
 
   @override
-  Widget build(BuildContext context) {
-    List<Map<String, String>> exercises = _getExercisesByWorkoutType(workoutType);
+  _WorkoutDetailPageState createState() => _WorkoutDetailPageState();
+}
 
+class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
+  List<Map<String, String>> exercises = [];
+  List<bool> exerciseCompleted = []; // To track which exercises are done
+
+  @override
+  void initState() {
+    super.initState();
+    exercises = _getExercisesByWorkoutType(widget.workoutType);
+    exerciseCompleted = List<bool>.filled(exercises.length, false); // Initialize completion status
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -27,20 +41,18 @@ class WorkoutDetailPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Workout title section
                 SizedBox(height: 10),
                 Expanded(
                   child: ListView.builder(
                     itemCount: exercises.length,
                     itemBuilder: (context, index) {
-                      return _buildExerciseCard(exercises[index]);
+                      return _buildExerciseCard(context, exercises[index], index);
                     },
                   ),
                 ),
               ],
             ),
           ),
-          // "Start" button at the bottom
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
@@ -50,13 +62,26 @@ class WorkoutDetailPage extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, // Button color
+                    backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   onPressed: () {
-                    // Add logic for starting the workout here
+                    if (exercises.isNotEmpty) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ExerciseDetailPage(
+                            exercise: exercises[0], // Start with the first exercise
+                            index: 0,
+                            totalExercises: exercises.length,
+                            onComplete: _onExerciseComplete,
+                            exercises: exercises, // Pass the list of exercises
+                          ),
+                        ),
+                      );
+                    }
                   },
                   child: Text(
                     'Start',
@@ -71,19 +96,42 @@ class WorkoutDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildExerciseCard(Map<String, String> exercise) {
+  Widget _buildExerciseCard(BuildContext context, Map<String, String> exercise, int index) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
         title: Text(exercise['name']!),
         subtitle: Text('Reps/Time: ${exercise['repsOrTime']}'),
-        trailing: Icon(Icons.check_circle_outline), // Optional: Add logic for marking complete
+        trailing: Icon(
+          exerciseCompleted[index] ? Icons.check_circle : Icons.check_circle_outline,
+          color: exerciseCompleted[index] ? Colors.green : null,
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ExerciseDetailPage(
+                exercise: exercise,
+                index: index,
+                totalExercises: exercises.length,
+                onComplete: _onExerciseComplete,
+                exercises: exercises, // Pass the list of exercises
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
+  void _onExerciseComplete(int index) {
+    setState(() {
+      exerciseCompleted[index] = true;
+    });
+  }
+
+  // Function to return exercise list based on workoutType
   List<Map<String, String>> _getExercisesByWorkoutType(String workoutType) {
-    // Replace this placeholder with actual data
     switch (workoutType) {
       case 'upper_body_workout':
         return [
