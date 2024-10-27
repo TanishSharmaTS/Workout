@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'exercise_details.dart';
+import 'exercise_data.dart';
 
 class WorkoutDetailPage extends StatefulWidget {
   final String workoutType;
@@ -12,14 +12,14 @@ class WorkoutDetailPage extends StatefulWidget {
 }
 
 class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
-  List<Map<String, String>> exercises = [];
-  List<bool> exerciseCompleted = []; // To track which exercises are done
+  List<Exercise> exercises = [];
+  List<bool> exerciseCompleted = [];
 
   @override
   void initState() {
     super.initState();
     exercises = _getExercisesByWorkoutType(widget.workoutType);
-    exerciseCompleted = List<bool>.filled(exercises.length, false); // Initialize completion status
+    exerciseCompleted = List<bool>.filled(exercises.length, false);
   }
 
   @override
@@ -73,11 +73,11 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ExerciseDetailPage(
-                            exercise: exercises[0], // Start with the first exercise
+                            exercise: exercises[0],
                             index: 0,
                             totalExercises: exercises.length,
                             onComplete: _onExerciseComplete,
-                            exercises: exercises, // Pass the list of exercises
+                            exercises: exercises,
                           ),
                         ),
                       );
@@ -96,12 +96,12 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
     );
   }
 
-  Widget _buildExerciseCard(BuildContext context, Map<String, String> exercise, int index) {
+  Widget _buildExerciseCard(BuildContext context, Exercise exercise, int index) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
-        title: Text(exercise['name']!),
-        subtitle: Text('Reps/Time: ${exercise['repsOrTime']}'),
+        title: Text(exercise.name),
+        subtitle: Text('Reps/Time: ${exercise.repsOrTime}'),
         trailing: Icon(
           exerciseCompleted[index] ? Icons.check_circle : Icons.check_circle_outline,
           color: exerciseCompleted[index] ? Colors.green : null,
@@ -115,7 +115,7 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
                 index: index,
                 totalExercises: exercises.length,
                 onComplete: _onExerciseComplete,
-                exercises: exercises, // Pass the list of exercises
+                exercises: exercises,
               ),
             ),
           );
@@ -130,29 +130,28 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
     });
   }
 
-  // Function to return exercise list based on workoutType
-  List<Map<String, String>> _getExercisesByWorkoutType(String workoutType) {
+  List<Exercise> _getExercisesByWorkoutType(String workoutType) {
     switch (workoutType) {
       case 'upper_body_workout':
         return [
-          {'name': 'Push Up', 'repsOrTime': '3 sets of 12 reps'},
-          {'name': 'Bench Press', 'repsOrTime': '3 sets of 10 reps'},
-          {'name': 'Pull Up', 'repsOrTime': '2 sets of 8 reps'},
-          {'name': 'Shoulder Press', 'repsOrTime': '3 sets of 12 reps'},
+          Exercise(name: 'Push Up', repsOrTime: '3 sets of 12 reps'),
+          Exercise(name: 'Bench Press', repsOrTime: '3 sets of 10 reps'),
+          Exercise(name: 'Pull Up', repsOrTime: '2 sets of 8 reps'),
+          Exercise(name: 'Shoulder Press', repsOrTime: '3 sets of 12 reps'),
         ];
       case 'lower_body_workout':
         return [
-          {'name': 'Squats', 'repsOrTime': '4 sets of 15 reps'},
-          {'name': 'Lunges', 'repsOrTime': '3 sets of 12 reps'},
-          {'name': 'Leg Press', 'repsOrTime': '3 sets of 10 reps'},
-          {'name': 'Deadlift', 'repsOrTime': '3 sets of 8 reps'},
+          Exercise(name: 'Squats', repsOrTime: '4 sets of 15 reps'),
+          Exercise(name: 'Lunges', repsOrTime: '3 sets of 12 reps'),
+          Exercise(name: 'Leg Press', repsOrTime: '3 sets of 10 reps'),
+          Exercise(name: 'Deadlift', repsOrTime: '3 sets of 8 reps'),
         ];
       case 'full_body_workout':
         return [
-          {'name': 'Burpees', 'repsOrTime': '3 sets of 30 seconds'},
-          {'name': 'Mountain Climbers', 'repsOrTime': '3 sets of 30 seconds'},
-          {'name': 'Plank', 'repsOrTime': 'Hold for 1 minute'},
-          {'name': 'Jumping Jacks', 'repsOrTime': '3 sets of 45 seconds'},
+          Exercise(name: 'Burpees', repsOrTime: '3 sets of 30 seconds', img: 'assets/full_body/Burpee.jpg'),
+          Exercise(name: 'Mountain Climbers', repsOrTime: '3 sets of 30 seconds', img: 'assets/full_body/mountainclimber.jpg'),
+          Exercise(name: 'Plank', repsOrTime: 'Hold for 60 seconds', img: 'assets/full_body/plank.jpg'),
+          Exercise(name: 'Jumping Jacks', repsOrTime: '3 sets of 45 seconds', img: 'assets/full_body/jumpingj.jpg'),
         ];
       default:
         return [];

@@ -9,8 +9,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  String searchQuery = ""; // For filtering based on search
+  List<WorkoutCategory> filteredWorkoutCategories = [];
 
   final List<WorkoutCategory> workoutCategories = [
     WorkoutCategory(
@@ -18,65 +21,77 @@ class _HomePageState extends State<HomePage> {
       workoutType: 'upper_body_workout',
       numberOfExercises: 10,
       estimatedTime: '30 mins',
-      imagePath: 'assets/upper_body.png'
+      imagePath: 'assets/upper_body.png',
     ),
     WorkoutCategory(
       categoryName: 'Lower Body',
       workoutType: 'lower_body_workout',
       numberOfExercises: 12,
       estimatedTime: '35 mins',
-        imagePath: 'assets/lower_body.png'
-
+      imagePath: 'assets/lower_body.png',
     ),
     WorkoutCategory(
       categoryName: 'Full Body',
       workoutType: 'full_body_workout',
       numberOfExercises: 15,
       estimatedTime: '45 mins',
-        imagePath: 'assets/full_body.png'
-
+      imagePath: 'assets/full_body.png',
     ),
     WorkoutCategory(
-        categoryName: 'Arms',
-        workoutType: 'full_body_workout',
-        numberOfExercises: 15,
-        estimatedTime: '45 mins',
-        imagePath: 'assets/arms.png'
-
+      categoryName: 'Arms',
+      workoutType: 'arms_workout',
+      numberOfExercises: 8,
+      estimatedTime: '20 mins',
+      imagePath: 'assets/arms.png',
     ),
     WorkoutCategory(
-        categoryName: 'Back',
-        workoutType: 'full_body_workout',
-        numberOfExercises: 15,
-        estimatedTime: '45 mins',
-        imagePath: 'assets/back.png'
-
+      categoryName: 'Back',
+      workoutType: 'back_workout',
+      numberOfExercises: 10,
+      estimatedTime: '25 mins',
+      imagePath: 'assets/back.png',
     ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    filteredWorkoutCategories = workoutCategories;
+  }
+
+  void updateSearchQuery(String query) {
+    setState(() {
+      searchQuery = query;
+      filteredWorkoutCategories = workoutCategories
+          .where((category) => category.categoryName
+          .toLowerCase()
+          .contains(searchQuery.toLowerCase()))
+          .toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Work Out'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // Add search action here
-            },
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search bar
-
+            TextField(
+              onChanged: updateSearchQuery,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: 'Search Exercises...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
             SizedBox(height: 20),
-            // Calendar widget (showing current week)
             Text(
               'This Week',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -105,20 +120,20 @@ class _HomePageState extends State<HomePage> {
                   shape: BoxShape.circle,
                 ),
               ),
-              headerVisible: false, // Hides month and year at the top
+              headerVisible: false,
             ),
             SizedBox(height: 20),
-            // Exercise categories
             Text(
               'Exercise Categories',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             Expanded(
               child: ListView.builder(
-                shrinkWrap: true, // Ensures the ListView takes only as much height as needed
-                itemCount: workoutCategories.length,
+                shrinkWrap: true,
+                itemCount: filteredWorkoutCategories.length,
                 itemBuilder: (context, index) {
-                  return _buildWorkoutCard(context, workoutCategories[index]);
+                  return _buildWorkoutCard(
+                      context, filteredWorkoutCategories[index]);
                 },
               ),
             ),
@@ -128,9 +143,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
-  // Workout card widget
-  Widget _buildWorkoutCard(BuildContext context, WorkoutCategory category) {
+  Widget _buildWorkoutCard(
+      BuildContext context, WorkoutCategory category) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -138,17 +152,19 @@ class _HomePageState extends State<HomePage> {
           MaterialPageRoute(
             builder: (context) => WorkoutDetailPage(workoutType: category.workoutType),
           ),
-        );      },
+        );
+      },
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10), // Reduced horizontal margin for full width
-        width: double.infinity, // Full width
-        height: 150, // Increased height for a better layout
+        margin: EdgeInsets.symmetric(vertical: 10),
+        width: double.infinity,
+        height: 150,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           image: DecorationImage(
             image: AssetImage(category.imagePath),
             fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.darken),
+            colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.5), BlendMode.darken),
           ),
         ),
         child: Padding(
@@ -180,8 +196,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-
-
-
-
