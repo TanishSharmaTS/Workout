@@ -1,21 +1,17 @@
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
+class WorkoutCompletion {
+  final String workoutType;
+  final DateTime completionDate;
 
-Future<void> saveWorkoutDate(DateTime date) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  List<String> completedDates = prefs.getStringList('completedWorkouts') ?? [];
+  WorkoutCompletion({
+    required this.workoutType,
+    required this.completionDate,
+  });
 
-  // Prevent duplicate entries
-  if (!completedDates.contains(date.toIso8601String())) {
-    completedDates.add(date.toIso8601String());
-    await prefs.setStringList('completedWorkouts', completedDates);
+  // Method to retrieve completed dates for a particular workout type
+  static List<DateTime> getCompletionDates(String workoutType, List<WorkoutCompletion> completions) {
+    return completions
+        .where((completion) => completion.workoutType == workoutType)
+        .map((completion) => completion.completionDate)
+        .toList();
   }
-}
-
-Future<List<DateTime>> getCompletedWorkoutDates() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  List<String> dateStrings = prefs.getStringList('completedWorkouts') ?? [];
-
-  // Convert stored date strings to DateTime objects
-  return dateStrings.map((date) => DateTime.parse(date)).toList();
 }

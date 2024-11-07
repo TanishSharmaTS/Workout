@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'exercise_details.dart';
 import 'exercise_data.dart';
 
@@ -14,16 +17,49 @@ class WorkoutDetailPage extends StatefulWidget {
 class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
   List<Exercise> exercises = [];
   List<bool> exerciseCompleted = [];
+  final ScrollController _scrollController = ScrollController();
+
 
   @override
   void initState() {
     super.initState();
     exercises = _getExercisesByWorkoutType(widget.workoutType);
     exerciseCompleted = List<bool>.filled(exercises.length, false);
+    _checkIfWorkoutCompletedToday();
+
   }
+
+
+  Future<void> _checkIfWorkoutCompletedToday() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> workoutCompletions = prefs.getStringList('workoutCompletions') ?? [];
+    DateTime today = DateTime.now();
+
+    // Check if workout of this type was completed today
+    bool isWorkoutCompletedToday = workoutCompletions.any((completionData) {
+      Map<String, dynamic> completion = jsonDecode(completionData);
+      String workoutType = completion['workoutType'];
+      DateTime completionDate = DateTime.parse(completion['completionDate']);
+
+      return workoutType == widget.workoutType &&
+          completionDate.year == today.year &&
+          completionDate.month == today.month &&
+          completionDate.day == today.day;
+    });
+
+    // Update exercise completion state if workout is already completed today
+    if (isWorkoutCompletedToday) {
+      setState(() {
+        exerciseCompleted.fillRange(0, exercises.length, true);
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
+    int completedCount = exerciseCompleted.where((completed) => completed).length;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -32,7 +68,7 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
             Navigator.pop(context);
           },
         ),
-        title: Text('Exercises'),
+        title: Text('Exercises (${completedCount}/${exercises.length} Completed)'),
       ),
       body: Stack(
         children: [
@@ -44,6 +80,7 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
                 SizedBox(height: 10),
                 Expanded(
                   child: ListView.builder(
+                    controller: _scrollController,
                     itemCount: exercises.length,
                     itemBuilder: (context, index) {
                       return _buildExerciseCard(context, exercises[index], index);
@@ -84,7 +121,7 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
                     }
                   },
                   child: Text(
-                    'Start',
+                    completedCount == 0 ? 'Start' : 'Continue ($completedCount/${exercises.length})',
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
                 ),
@@ -98,6 +135,7 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
 
   Widget _buildExerciseCard(BuildContext context, Exercise exercise, int index) {
     return Card(
+      color: exerciseCompleted[index] ? Colors.green.shade50 : Colors.white,
       margin: EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
         title: Text(exercise.name),
@@ -118,17 +156,70 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
                 exercises: exercises,
               ),
             ),
-          );
+          ).then((_) => _scrollToCurrentExercise(index));
         },
       ),
     );
   }
 
-  void _onExerciseComplete(int index) {
+  void _onExerciseComplete(int index) async {
     setState(() {
       exerciseCompleted[index] = true;
     });
+
+    if (exerciseCompleted.every((completed) => completed)) {
+      await _saveWorkoutCompletion(widget.workoutType);
+      _checkAllCompleted();
+    }
   }
+
+  Future<void> _saveWorkoutCompletion(String workoutType) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> workoutCompletions = prefs.getStringList('workoutCompletions') ?? [];
+
+    // Add the new completion as a JSON-encoded string
+    workoutCompletions.add(jsonEncode({
+      'workoutType': workoutType,
+      'completionDate': DateTime.now().toIso8601String(),
+    }));
+
+    await prefs.setStringList('workoutCompletions', workoutCompletions);
+  }
+
+
+
+  void _checkAllCompleted() {
+    if (exerciseCompleted.every((completed) => completed)) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Workout Complete!"),
+            content: Text("Great job! You've completed all exercises."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  void _scrollToCurrentExercise(int index) {
+    _scrollController.animateTo(
+      index * 100.0, // Adjust this value as needed for card height
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+
+
 
   List<Exercise> _getExercisesByWorkoutType(String workoutType) {
     switch (workoutType) {

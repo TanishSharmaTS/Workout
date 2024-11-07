@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'workout_details.dart';
 import 'workout_category.dart';
@@ -14,6 +17,8 @@ class _HomePageState extends State<HomePage> {
   DateTime? _selectedDay;
   String searchQuery = ""; // For filtering based on search
   List<WorkoutCategory> filteredWorkoutCategories = [];
+  Set<DateTime> completedWorkoutDates = {};
+
 
   final List<WorkoutCategory> workoutCategories = [
     WorkoutCategory(
@@ -70,6 +75,19 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<void> _loadCompletedWorkoutDates() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> workoutCompletionStrings = prefs.getStringList('workoutCompletions') ?? [];
+
+    // Parse each date string and add it to the set
+    setState(() {
+      completedWorkoutDates = workoutCompletionStrings.map((item) {
+        var completion = jsonDecode(item);
+        return DateTime.parse(completion['completionDate']);
+      }).toSet();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,6 +139,26 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               headerVisible: false,
+              calendarBuilders: CalendarBuilders(
+                defaultBuilder: (context, day, focusedDay) {
+                  // Check if the day is in the completed workout dates
+                  if (completedWorkoutDates.contains(day)) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.green, // Custom color for completed dates
+                        shape: BoxShape.circle,
+                      ),
+                      margin: const EdgeInsets.all(6.0),
+                      alignment: Alignment.center,
+                      child: Text(
+                        '${day.day}',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    );
+                  }
+                  return null; // Use the default styling for other dates
+                },
+              ),
             ),
             SizedBox(height: 20),
             Text(

@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,6 +16,7 @@ class _ReportPageState extends State<ReportPage> {
   late Future<void> _loadUserDataFuture;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  Set<DateTime> completedWorkoutDates = {};
   double _bmi = 0.0;
   int _height = 0; // Editable height
   double _weight = 0.0;
@@ -24,6 +28,27 @@ class _ReportPageState extends State<ReportPage> {
   void initState() {
     super.initState();
     _loadUserDataFuture = _loadUserData();
+
+    // Load exact completed workout dates without setting state
+    _loadCompletedWorkoutDates().then((dates) {
+      completedWorkoutDates = dates;
+    });
+  }
+
+// Helper function to normalize dates
+  DateTime _normalizeDate(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
+  }
+
+  Future<Set<DateTime>> _loadCompletedWorkoutDates() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> workoutCompletionStrings = prefs.getStringList('workoutCompletions') ?? [];
+
+    // Parse each date string, normalize, and add it to a set
+    return workoutCompletionStrings.map((item) {
+      var completion = jsonDecode(item);
+      return _normalizeDate(DateTime.parse(completion['completionDate']));
+    }).toSet();
   }
 
   // This function handles editing BMI and height
@@ -203,7 +228,8 @@ class _ReportPageState extends State<ReportPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('History', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),TextButton(
+              Text('History', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              TextButton(
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -212,7 +238,6 @@ class _ReportPageState extends State<ReportPage> {
                 },
                 child: Text('All records'),
               ),
-
             ],
           ),
           TableCalendar(
@@ -240,11 +265,32 @@ class _ReportPageState extends State<ReportPage> {
               ),
             ),
             headerVisible: false,
+            calendarBuilders: CalendarBuilders(
+              defaultBuilder: (context, day, focusedDay) {
+                if (completedWorkoutDates.contains(_normalizeDate(day))) {
+                  print(day);
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.green, // Custom color for completed dates
+                      shape: BoxShape.circle,
+                    ),
+                    margin: const EdgeInsets.all(6.0),
+                    alignment: Alignment.center,
+                    child: Text(
+                      '${day.day}',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
+                }
+                return null; // Use the default styling for other dates
+              },
+            ),
           ),
         ],
       ),
     );
   }
+
 
   Widget _buildBMISection() {
     return Container(
