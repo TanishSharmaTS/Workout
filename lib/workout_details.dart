@@ -140,10 +140,6 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
       child: ListTile(
         title: Text(exercise.name),
         subtitle: Text('Reps/Time: ${exercise.repsOrTime}'),
-        trailing: Icon(
-          exerciseCompleted[index] ? Icons.check_circle : Icons.check_circle_outline,
-          color: exerciseCompleted[index] ? Colors.green : null,
-        ),
         onTap: () {
           Navigator.push(
             context,
