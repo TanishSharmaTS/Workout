@@ -62,6 +62,10 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     filteredWorkoutCategories = workoutCategories;
+
+    _loadCompletedWorkoutDates().then((dates) {
+      completedWorkoutDates = dates;
+    });
   }
 
   void updateSearchQuery(String query) {
@@ -75,17 +79,18 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<void> _loadCompletedWorkoutDates() async {
+  Future<Set<DateTime>> _loadCompletedWorkoutDates() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> workoutCompletionStrings = prefs.getStringList('workoutCompletions') ?? [];
 
-    // Parse each date string and add it to the set
-    setState(() {
-      completedWorkoutDates = workoutCompletionStrings.map((item) {
-        var completion = jsonDecode(item);
-        return DateTime.parse(completion['completionDate']);
-      }).toSet();
-    });
+    return workoutCompletionStrings.map((item) {
+      var completion = jsonDecode(item);
+      return _normalizeDate(DateTime.parse(completion['completionDate']));
+    }).toSet();
+  }
+
+  DateTime _normalizeDate(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
   }
 
   @override
@@ -141,8 +146,8 @@ class _HomePageState extends State<HomePage> {
               headerVisible: false,
               calendarBuilders: CalendarBuilders(
                 defaultBuilder: (context, day, focusedDay) {
-                  // Check if the day is in the completed workout dates
-                  if (completedWorkoutDates.contains(day)) {
+                  if (completedWorkoutDates.contains(_normalizeDate(day))) {
+                    print(day);
                     return Container(
                       decoration: BoxDecoration(
                         color: Colors.green, // Custom color for completed dates

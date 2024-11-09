@@ -161,7 +161,7 @@ class _ReportPageState extends State<ReportPage> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             // Once data is loaded, display the main content
-            return Padding(
+            return SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,7 +244,7 @@ class _ReportPageState extends State<ReportPage> {
             firstDay: DateTime.utc(2022, 1, 1),
             lastDay: DateTime.utc(2030, 12, 31),
             focusedDay: _focusedDay,
-            calendarFormat: CalendarFormat.week,
+            calendarFormat: CalendarFormat.month,
             selectedDayPredicate: (day) {
               return isSameDay(_selectedDay, day);
             },

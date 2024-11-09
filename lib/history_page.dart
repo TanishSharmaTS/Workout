@@ -29,6 +29,7 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Workout History'),
       ),
@@ -48,6 +49,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget _buildWorkoutCard(Map<String, dynamic> completion) {
     return Card(
+      color: Colors.white, // Set card color to white
       margin: EdgeInsets.symmetric(vertical: 8),
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -59,7 +61,7 @@ class _HistoryPageState extends State<HistoryPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              completion['workoutType'],
+              _capitalizeWords(completion['workoutType']),
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -77,6 +79,15 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
       ),
     );
+  }
+
+  String _capitalizeWords(String text) {
+    return text
+        .split('_') // Split the string by underscores
+        .map((word) => word.isNotEmpty
+        ? word[0].toUpperCase() + word.substring(1).toLowerCase() // Capitalize first letter of each word
+        : '')
+        .join(' '); // Join the words back with spaces
   }
 
   String _formatDate(DateTime date) {

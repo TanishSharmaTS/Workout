@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'exercise_details.dart';
@@ -214,9 +213,6 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
     );
   }
 
-
-
-
   List<Exercise> _getExercisesByWorkoutType(String workoutType) {
     switch (workoutType) {
       case 'upper_body_workout':
@@ -232,6 +228,7 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
           Exercise(name: 'Lunges', repsOrTime: '3 sets of 12 reps'),
           Exercise(name: 'Leg Press', repsOrTime: '3 sets of 10 reps'),
           Exercise(name: 'Deadlift', repsOrTime: '3 sets of 8 reps'),
+
         ];
       case 'full_body_workout':
         return [
@@ -239,6 +236,8 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
           Exercise(name: 'Mountain Climbers', repsOrTime: '3 sets of 30 seconds', img: 'assets/full_body/mountainclimber.jpg'),
           Exercise(name: 'Plank', repsOrTime: 'Hold for 60 seconds', img: 'assets/full_body/plank.jpg'),
           Exercise(name: 'Jumping Jacks', repsOrTime: '3 sets of 45 seconds', img: 'assets/full_body/jumpingj.jpg'),
+          Exercise(name: 'Jumping Jacks', repsOrTime: '3 sets of 45 seconds', img: 'assets/full_body/jumpingj.jpg'),
+
         ];
       default:
         return [];
