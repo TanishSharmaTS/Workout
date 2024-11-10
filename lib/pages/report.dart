@@ -20,9 +20,8 @@ class _ReportPageState extends State<ReportPage> {
   double _bmi = 0.0;
   int _height = 0; // Editable height
   double _weight = 0.0;
-  int _workouts = 34;
-  int _calories = 7218;
-  int _minutes = 348;
+  int _workouts = 0;
+  int _calories = 0;
 
   @override
   void initState() {
@@ -32,6 +31,17 @@ class _ReportPageState extends State<ReportPage> {
     // Load exact completed workout dates without setting state
     _loadCompletedWorkoutDates().then((dates) {
       completedWorkoutDates = dates;
+    });
+
+    _loadSummaryData();
+
+  }
+
+  Future<void> _loadSummaryData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _workouts = prefs.getInt('totalWorkoutsCompleted') ?? 0;
+      _calories = prefs.getInt('totalCaloriesBurned') ?? 0;
     });
   }
 
@@ -135,7 +145,10 @@ class _ReportPageState extends State<ReportPage> {
   }
 
   String _getBMIStatus() {
-    if (_bmi < 18.5) {
+    if(_bmi == 0.0){
+      return " ";
+    }
+    else if (_bmi < 18.5) {
       return 'Underweight';
     } else if (_bmi < 25) {
       return 'Healthy weight';
@@ -192,11 +205,10 @@ class _ReportPageState extends State<ReportPage> {
         boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 5)],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildStatItem(Icons.fitness_center, _workouts, 'Workouts'),
           _buildStatItem(Icons.local_fire_department, _calories, 'Kcal'),
-          _buildStatItem(Icons.timer, _minutes, 'Minutes'),
         ],
       ),
     );

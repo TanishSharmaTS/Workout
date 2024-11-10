@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -27,6 +26,7 @@ class _HomePageState extends State<HomePage> {
       numberOfExercises: 10,
       estimatedTime: '30 mins',
       imagePath: 'assets/upper_body.png',
+      calories: 200
     ),
     WorkoutCategory(
       categoryName: 'Lower Body',
@@ -34,6 +34,7 @@ class _HomePageState extends State<HomePage> {
       numberOfExercises: 12,
       estimatedTime: '35 mins',
       imagePath: 'assets/lower_body.png',
+      calories: 200
     ),
     WorkoutCategory(
       categoryName: 'Full Body',
@@ -41,6 +42,7 @@ class _HomePageState extends State<HomePage> {
       numberOfExercises: 15,
       estimatedTime: '45 mins',
       imagePath: 'assets/full_body.png',
+      calories: 150
     ),
     WorkoutCategory(
       categoryName: 'Arms',
@@ -48,6 +50,7 @@ class _HomePageState extends State<HomePage> {
       numberOfExercises: 8,
       estimatedTime: '20 mins',
       imagePath: 'assets/arms.png',
+      calories: 200
     ),
     WorkoutCategory(
       categoryName: 'Back',
@@ -55,6 +58,7 @@ class _HomePageState extends State<HomePage> {
       numberOfExercises: 10,
       estimatedTime: '25 mins',
       imagePath: 'assets/back.png',
+      calories: 130
     ),
   ];
 

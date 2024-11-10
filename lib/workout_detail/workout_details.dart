@@ -17,16 +17,18 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
   List<Exercise> exercises = [];
   List<bool> exerciseCompleted = [];
   final ScrollController _scrollController = ScrollController();
-
+  int totalWorkoutsCompleted = 0;
+  int totalCaloriesBurned = 0;
 
   @override
   void initState() {
     super.initState();
     exercises = _getExercisesByWorkoutType(widget.workoutType);
     exerciseCompleted = List<bool>.filled(exercises.length, false);
+    _loadTotalWorkoutsAndCalories(); // Load saved total values
     _checkIfWorkoutCompletedToday();
-
   }
+
 
 
   Future<void> _checkIfWorkoutCompletedToday() async {
@@ -34,7 +36,6 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
     List<String> workoutCompletions = prefs.getStringList('workoutCompletions') ?? [];
     DateTime today = DateTime.now();
 
-    // Check if workout of this type was completed today
     bool isWorkoutCompletedToday = workoutCompletions.any((completionData) {
       Map<String, dynamic> completion = jsonDecode(completionData);
       String workoutType = completion['workoutType'];
@@ -46,14 +47,29 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
           completionDate.day == today.day;
     });
 
-    // Update exercise completion state if workout is already completed today
     if (isWorkoutCompletedToday) {
       setState(() {
         exerciseCompleted.fillRange(0, exercises.length, true);
       });
     }
   }
+  Future<void> _loadTotalWorkoutsAndCalories() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      totalWorkoutsCompleted = prefs.getInt('totalWorkoutsCompleted') ?? 0;
+      totalCaloriesBurned = prefs.getInt('totalCaloriesBurned') ?? 0;
+    });
+  }
 
+  Future<void> _updateTotalWorkoutsAndCalories(int calories) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      totalWorkoutsCompleted += 1;
+      totalCaloriesBurned += calories;
+    });
+    await prefs.setInt('totalWorkoutsCompleted', totalWorkoutsCompleted);
+    await prefs.setInt('totalCaloriesBurned', totalCaloriesBurned);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,8 +179,23 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
     });
 
     if (exerciseCompleted.every((completed) => completed)) {
+      int calories = _getCaloriesByWorkoutType(widget.workoutType);
       await _saveWorkoutCompletion(widget.workoutType);
       _checkAllCompleted();
+      await _updateTotalWorkoutsAndCalories(calories);
+    }
+  }
+
+  int _getCaloriesByWorkoutType(String workoutType) {
+    switch (workoutType) {
+      case 'upper_body_workout':
+        return 200;
+      case 'lower_body_workout':
+        return 250;
+      case 'full_body_workout':
+        return 300;
+      default:
+        return 180;
     }
   }
 
@@ -179,8 +210,6 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
 
     await prefs.setStringList('workoutCompletions', workoutCompletions);
   }
-
-
 
   void _checkAllCompleted() {
     if (exerciseCompleted.every((completed) => completed)) {
@@ -227,16 +256,13 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
           Exercise(name: 'Lunges', repsOrTime: '3 sets of 12 reps'),
           Exercise(name: 'Leg Press', repsOrTime: '3 sets of 10 reps'),
           Exercise(name: 'Deadlift', repsOrTime: '3 sets of 8 reps'),
-
         ];
       case 'full_body_workout':
         return [
-          Exercise(name: 'Burpees', repsOrTime: '3 sets of 30 seconds', img: 'assets/full_body/Burpee.jpg'),
-          Exercise(name: 'Mountain Climbers', repsOrTime: '3 sets of 30 seconds', img: 'assets/full_body/mountainclimber.jpg'),
-          Exercise(name: 'Plank', repsOrTime: 'Hold for 60 seconds', img: 'assets/full_body/plank.jpg'),
-          Exercise(name: 'Jumping Jacks', repsOrTime: '3 sets of 45 seconds', img: 'assets/full_body/jumpingj.jpg'),
-          Exercise(name: 'Jumping Jacks', repsOrTime: '3 sets of 45 seconds', img: 'assets/full_body/jumpingj.jpg'),
-
+          Exercise(name: 'Burpees', repsOrTime: '3 sets of 30 seconds'),
+          Exercise(name: 'Mountain Climbers', repsOrTime: '3 sets of 30 seconds'),
+          Exercise(name: 'Plank', repsOrTime: 'Hold for 60 seconds'),
+          Exercise(name: 'Jumping Jacks', repsOrTime: '3 sets of 45 seconds'),
         ];
       default:
         return [];
