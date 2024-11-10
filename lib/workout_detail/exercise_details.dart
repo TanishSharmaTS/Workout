@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'exercise_data.dart';
+import '../data/exercise_data.dart';
 
 class ExerciseDetailPage extends StatefulWidget {
   final Exercise exercise;

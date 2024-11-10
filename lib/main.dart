@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'home.dart';
-import 'report.dart';
-import 'discover_page.dart';
+import 'pages/home.dart';
+import 'pages/report.dart';
+import 'pages/discover_page.dart';
 
 void main() {
   runApp(WorkoutApp());

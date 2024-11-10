@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'exercise_details.dart';
-import 'exercise_data.dart';
+import '../data/exercise_data.dart';
 
 class WorkoutDetailPage extends StatefulWidget {
   final String workoutType;
@@ -172,7 +172,6 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> workoutCompletions = prefs.getStringList('workoutCompletions') ?? [];
 
-    // Add the new completion as a JSON-encoded string
     workoutCompletions.add(jsonEncode({
       'workoutType': workoutType,
       'completionDate': DateTime.now().toIso8601String(),

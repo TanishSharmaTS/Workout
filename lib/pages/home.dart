@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'workout_details.dart';
-import 'workout_category.dart';
+import '../workout_detail/workout_details.dart';
+import '../data/workout_category.dart';
 
 class HomePage extends StatefulWidget {
   @override
