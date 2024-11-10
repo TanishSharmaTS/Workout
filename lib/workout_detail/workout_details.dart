@@ -33,23 +33,13 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
 
   Future<void> _checkIfWorkoutCompletedToday() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> workoutCompletions = prefs.getStringList('workoutCompletions') ?? [];
     DateTime today = DateTime.now();
 
-    bool isWorkoutCompletedToday = workoutCompletions.any((completionData) {
-      Map<String, dynamic> completion = jsonDecode(completionData);
-      String workoutType = completion['workoutType'];
-      DateTime completionDate = DateTime.parse(completion['completionDate']);
-
-      return workoutType == widget.workoutType &&
-          completionDate.year == today.year &&
-          completionDate.month == today.month &&
-          completionDate.day == today.day;
-    });
-
-    if (isWorkoutCompletedToday) {
+    for (int i = 0; i < exercises.length; i++) {
+      String key = '${widget.workoutType}_exercise_${i}_${today.toIso8601String().substring(0, 10)}';
+      bool isCompleted = prefs.getBool(key) ?? false;
       setState(() {
-        exerciseCompleted.fillRange(0, exercises.length, true);
+        exerciseCompleted[i] = isCompleted;
       });
     }
   }
@@ -174,15 +164,22 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
   }
 
   void _onExerciseComplete(int index) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    DateTime today = DateTime.now();
+
     setState(() {
       exerciseCompleted[index] = true;
     });
 
+    String key = '${widget.workoutType}_exercise_${index}_${today.toIso8601String().substring(0, 10)}';
+    await prefs.setBool(key, true);
+
+    // Check if all exercises are completed
     if (exerciseCompleted.every((completed) => completed)) {
       int calories = _getCaloriesByWorkoutType(widget.workoutType);
       await _saveWorkoutCompletion(widget.workoutType);
-      _checkAllCompleted();
       await _updateTotalWorkoutsAndCalories(calories);
+      _checkAllCompleted();
     }
   }
 
