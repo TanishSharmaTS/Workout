@@ -1,7 +1,7 @@
 class Exercise {
   final String name;
   final String repsOrTime;
-  final String ? img;
+  final String img;
 
-  Exercise({required this.name, required this.repsOrTime, this.img});
+  Exercise({required this.name, required this.repsOrTime,required this.img});
 }

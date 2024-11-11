@@ -171,14 +171,13 @@ class _ExerciseDetailPageState extends State<ExerciseDetailPage> {
               children: [
                 Container(
                   height: 200,
-                  color: Colors.grey.shade300,
+                  color: Colors.white,
                   child: Center(
-                    child: widget.exercise.img != null // Check if img is not null
-                        ? Image.asset(
-                      widget.exercise.img!, // Use ! to assert that img is not null
+                    child:// Check if img is not null
+                         Image.asset(
+                      widget.exercise.img, // Use ! to assert that img is not null
                       fit: BoxFit.cover, // Adjust the image to fit the container
                     )
-                        : Text('Exercise Image Here'), // Placeholder text
                   ),
                 ),
 
@@ -199,8 +198,8 @@ class _ExerciseDetailPageState extends State<ExerciseDetailPage> {
                     alignment: Alignment.center,
                     children: [
                       SizedBox(
-                        width: 220,
-                        height: 220,
+                        width: 150,
+                        height: 150,
                         child: CircularProgressIndicator(
                           value: progress,
                           strokeWidth: 10,

@@ -257,24 +257,26 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
     switch (workoutType) {
       case 'upper_body_workout':
         return [
-          Exercise(name: 'Push Up', repsOrTime: '3 sets of 12 reps'),
-          Exercise(name: 'Bench Press', repsOrTime: '3 sets of 10 reps'),
-          Exercise(name: 'Pull Up', repsOrTime: '2 sets of 8 reps'),
-          Exercise(name: 'Shoulder Press', repsOrTime: '3 sets of 12 reps'),
+          Exercise(name: 'Push Up', repsOrTime: '3 sets of 12 reps', img:'assets/images/upperbody/pushup.gif'),
+          Exercise(name: 'Bench Press', repsOrTime: '3 sets of 10 reps', img:'assets/images/upperbody/benchpress.gif'),
+          Exercise(name: 'Pull Up', repsOrTime: '2 sets of 8 reps', img:'assets/images/upperbody/pullup.gif'),
+          Exercise(name: 'Shoulder Press', repsOrTime: '3 sets of 12 reps', img:'assets/images/upperbody/shoulderpress.gif'),
         ];
       case 'lower_body_workout':
         return [
-          Exercise(name: 'Squats', repsOrTime: '4 sets of 15 reps'),
-          Exercise(name: 'Lunges', repsOrTime: '3 sets of 12 reps'),
-          Exercise(name: 'Leg Press', repsOrTime: '3 sets of 10 reps'),
-          Exercise(name: 'Deadlift', repsOrTime: '3 sets of 8 reps'),
+          Exercise(name: 'Squats', repsOrTime: '4 sets of 15 reps', img:'assets/images/lowerbody/squats.gif'),
+          Exercise(name: 'Lunges', repsOrTime: '3 sets of 12 reps', img:'assets/images/lowerbody/lunges.gif'),
+          Exercise(name: 'Leg Press', repsOrTime: '3 sets of 10 reps', img:'assets/images/lowerbody/legpress.gif'),
+          Exercise(name: 'Deadlift', repsOrTime: '3 sets of 8 reps', img:'assets/images/lowerbody/deadlift.gif'),
+          Exercise(name: 'Calf Raises', repsOrTime: '3 sets of 15 reps', img:'assets/images/lowerbody/calf raises.gif'),
+
         ];
       case 'full_body_workout':
         return [
-          Exercise(name: 'Burpees', repsOrTime: '3 sets of 30 seconds'),
-          Exercise(name: 'Mountain Climbers', repsOrTime: '3 sets of 30 seconds'),
-          Exercise(name: 'Plank', repsOrTime: 'Hold for 60 seconds'),
-          Exercise(name: 'Jumping Jacks', repsOrTime: '3 sets of 45 seconds'),
+          Exercise(name: 'Burpees', repsOrTime: '3 sets of 12 reps', img:'assets/images/fullbody/burpees.gif'),
+          Exercise(name: 'Mountain Climbers', repsOrTime: '3 sets of 8 reps', img:'assets/images/fullbody/mountainclimber.gif'),
+          Exercise(name: 'Plank', repsOrTime: 'Hold for 60 seconds', img:'assets/images/fullbody/plank.gif'),
+          Exercise(name: 'Jumping Jacks', repsOrTime: '3 sets of 45 seconds', img:'assets/images/fullbody/jumpingjacks.gif'),
         ];
       default:
         return [];
