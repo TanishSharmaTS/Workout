@@ -278,6 +278,20 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
           Exercise(name: 'Plank', repsOrTime: 'Hold for 60 seconds', img:'assets/images/fullbody/plank.gif'),
           Exercise(name: 'Jumping Jacks', repsOrTime: '3 sets of 45 seconds', img:'assets/images/fullbody/jumpingjacks.gif'),
         ];
+      case 'arms_workout':
+        return [
+          Exercise(name: 'Burpees', repsOrTime: '3 sets of 12 reps', img:'assets/images/fullbody/burpees.gif'),
+          Exercise(name: 'Mountain Climbers', repsOrTime: '3 sets of 8 reps', img:'assets/images/fullbody/mountainclimber.gif'),
+          Exercise(name: 'Plank', repsOrTime: 'Hold for 60 seconds', img:'assets/images/fullbody/plank.gif'),
+          Exercise(name: 'Jumping Jacks', repsOrTime: '3 sets of 45 seconds', img:'assets/images/fullbody/jumpingjacks.gif'),
+        ];
+      case 'back_workout':
+        return [
+          Exercise(name: 'Burpees', repsOrTime: '3 sets of 12 reps', img:'assets/images/fullbody/burpees.gif'),
+          Exercise(name: 'Mountain Climbers', repsOrTime: '3 sets of 8 reps', img:'assets/images/fullbody/mountainclimber.gif'),
+          Exercise(name: 'Plank', repsOrTime: 'Hold for 60 seconds', img:'assets/images/fullbody/plank.gif'),
+          Exercise(name: 'Jumping Jacks', repsOrTime: '3 sets of 45 seconds', img:'assets/images/fullbody/jumpingjacks.gif'),
+        ];
       default:
         return [];
     }
