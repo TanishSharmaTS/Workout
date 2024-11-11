@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import '../data/exercise_data.dart';
 
+Color hexToColor(String hexCode) {
+  return Color(int.parse('FF$hexCode', radix: 16));
+}
+
 class ExerciseDetailPage extends StatefulWidget {
   final Exercise exercise;
   final int index;
@@ -152,7 +156,11 @@ class _ExerciseDetailPageState extends State<ExerciseDetailPage> {
     double progress = _initialSeconds > 0 ? _remainingSeconds / _initialSeconds : 1.0;
 
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor:Colors.white,
+      appBar: AppBar(
+        backgroundColor:Colors.white,
+
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Column(
@@ -226,46 +234,57 @@ class _ExerciseDetailPageState extends State<ExerciseDetailPage> {
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 24.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
                 children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: widget.index > 0 ? _navigateToPreviousExercise : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey.shade300,
-                        padding: EdgeInsets.symmetric(vertical: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: _completeExercise,
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: hexToColor("00ADB5"),
+
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                          ),
+                          child: Text('DONE', style: TextStyle(fontSize: 16, color: Colors.white)),
+                        ),
                       ),
-                      child: Text('Previous', style: TextStyle(fontSize: 16)),
-                    ),
+                    ],
                   ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: _completeExercise,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        padding: EdgeInsets.symmetric(vertical: 12),
+                  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: widget.index > 0 ? _navigateToPreviousExercise : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey.shade300,
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                          ),
+                          child: Text('Previous', style: TextStyle(fontSize: 16)),
+                        ),
                       ),
-                      child: Text('DONE', style: TextStyle(fontSize: 16, color: Colors.white)),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: widget.index < widget.totalExercises - 1
-                          ? _navigateToNextExercise
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent,
-                        padding: EdgeInsets.symmetric(vertical: 12),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: widget.index < widget.totalExercises - 1
+                              ? _navigateToNextExercise
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.redAccent,
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                          ),
+                          child: Text('Skip', style: TextStyle(fontSize: 16)),
+                        ),
                       ),
-                      child: Text('Skip', style: TextStyle(fontSize: 16)),
-                    ),
+                    ],
                   ),
                 ],
               ),
-            ),
+            )
+
           ],
         ),
       ),

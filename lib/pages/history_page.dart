@@ -7,6 +7,10 @@ class HistoryPage extends StatefulWidget {
   _HistoryPageState createState() => _HistoryPageState();
 }
 
+Color hexToColor(String hexCode) {
+  return Color(int.parse('FF$hexCode', radix: 16));
+}
+
 class _HistoryPageState extends State<HistoryPage> {
   List<Map<String, dynamic>> workoutCompletions = [];
 
@@ -22,7 +26,9 @@ class _HistoryPageState extends State<HistoryPage> {
     setState(() {
       workoutCompletions = workoutCompletionStrings
           .map((item) => jsonDecode(item) as Map<String, dynamic>)
-          .toList();
+          .toList()
+          .reversed
+          .toList(); // Reverse the list here
     });
   }
 
@@ -31,7 +37,18 @@ class _HistoryPageState extends State<HistoryPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Workout History'),
+        title: Text(
+          'Workout History',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+        backgroundColor: hexToColor("00ADB5"),
+        iconTheme: IconThemeData(
+          color: Colors.white, // Set icon color to white
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -49,7 +66,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget _buildWorkoutCard(Map<String, dynamic> completion) {
     return Card(
-      color: Colors.white, // Set card color to white
+      color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 8),
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -83,11 +100,11 @@ class _HistoryPageState extends State<HistoryPage> {
 
   String _capitalizeWords(String text) {
     return text
-        .split('_') // Split the string by underscores
+        .split('_')
         .map((word) => word.isNotEmpty
-        ? word[0].toUpperCase() + word.substring(1).toLowerCase() // Capitalize first letter of each word
+        ? word[0].toUpperCase() + word.substring(1).toLowerCase()
         : '')
-        .join(' '); // Join the words back with spaces
+        .join(' ');
   }
 
   String _formatDate(DateTime date) {

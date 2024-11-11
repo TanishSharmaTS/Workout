@@ -13,6 +13,10 @@ class WorkoutDetailPage extends StatefulWidget {
   _WorkoutDetailPageState createState() => _WorkoutDetailPageState();
 }
 
+Color hexToColor(String hexCode) {
+  return Color(int.parse('FF$hexCode', radix: 16));
+}
+
 class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
   List<Exercise> exercises = [];
   List<bool> exerciseCompleted = [];
@@ -66,14 +70,25 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
     int completedCount = exerciseCompleted.where((completed) => completed).length;
 
     return Scaffold(
+      backgroundColor:Colors.white,
+
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color:Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        title: Text('Exercises (${completedCount}/${exercises.length} Completed)'),
+        title: Text('Exercises (${completedCount}/${exercises.length} Completed)',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+        backgroundColor: hexToColor("393E46"),
+
+
       ),
       body: Stack(
         children: [
@@ -104,7 +119,7 @@ class _WorkoutDetailPageState extends State<WorkoutDetailPage> {
                 height: 50,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: hexToColor("393E46"),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),

@@ -15,7 +15,7 @@ class WorkoutApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      debugShowCheckedModeBanner: false,  // This removes the debug banner
+      debugShowCheckedModeBanner: false,
       home: MainPage(),
     );
   }
@@ -64,6 +64,7 @@ class _MainPageState extends State<MainPage> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue,
+        backgroundColor: Colors.white,
         onTap: _onItemTapped,  // Switch page on tap
       ),
     );

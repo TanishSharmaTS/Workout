@@ -10,6 +10,10 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
+Color hexToColor(String hexCode) {
+  return Color(int.parse('FF$hexCode', radix: 16));
+}
+
 class _HomePageState extends State<HomePage> {
 
   DateTime _focusedDay = DateTime.now();
@@ -25,7 +29,7 @@ class _HomePageState extends State<HomePage> {
       workoutType: 'upper_body_workout',
       numberOfExercises: 10,
       estimatedTime: '30 mins',
-      imagePath: 'assets/upper_body.png',
+      imagePath: 'assets/home_page/upperbody.jpeg',
       calories: 200
     ),
     WorkoutCategory(
@@ -33,23 +37,15 @@ class _HomePageState extends State<HomePage> {
       workoutType: 'lower_body_workout',
       numberOfExercises: 12,
       estimatedTime: '35 mins',
-      imagePath: 'assets/lower_body.png',
+      imagePath: 'assets/home_page/lowerbody.png',
       calories: 200
-    ),
-    WorkoutCategory(
-      categoryName: 'Full Body',
-      workoutType: 'full_body_workout',
-      numberOfExercises: 15,
-      estimatedTime: '45 mins',
-      imagePath: 'assets/full_body.png',
-      calories: 150
     ),
     WorkoutCategory(
       categoryName: 'Arms',
       workoutType: 'arms_workout',
       numberOfExercises: 8,
       estimatedTime: '20 mins',
-      imagePath: 'assets/arms.png',
+      imagePath: 'assets/home_page/arms.jpg',
       calories: 200
     ),
     WorkoutCategory(
@@ -57,8 +53,16 @@ class _HomePageState extends State<HomePage> {
       workoutType: 'back_workout',
       numberOfExercises: 10,
       estimatedTime: '25 mins',
-      imagePath: 'assets/back.png',
+      imagePath: 'assets/home_page/back.jpeg',
       calories: 130
+    ),
+    WorkoutCategory(
+        categoryName: 'Full Body',
+        workoutType: 'full_body_workout',
+        numberOfExercises: 15,
+        estimatedTime: '45 mins',
+        imagePath: 'assets/home_page/fullbody.jpeg',
+        calories: 150
     ),
   ];
 
@@ -100,8 +104,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:Colors.white,
       appBar: AppBar(
-        title: Text('Work Out'),
+        title: Text(
+          'Workout App',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+        backgroundColor: hexToColor("00ADB5"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -229,13 +242,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               SizedBox(height: 5),
-              Text(
-                '${category.numberOfExercises} exercises • ${category.estimatedTime}',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
             ],
           ),
         ),

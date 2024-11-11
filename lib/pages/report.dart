@@ -7,6 +7,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'history_page.dart';
 
+Color hexToColor(String hexCode) {
+  return Color(int.parse('FF$hexCode', radix: 16));
+}
+
+
 class ReportPage extends StatefulWidget {
   @override
   _ReportPageState createState() => _ReportPageState();
@@ -18,7 +23,7 @@ class _ReportPageState extends State<ReportPage> {
   DateTime? _selectedDay;
   Set<DateTime> completedWorkoutDates = {};
   double _bmi = 0.0;
-  int _height = 0; // Editable height
+  int _height = 0;
   double _weight = 0.0;
   int _workouts = 0;
   int _calories = 0;
@@ -162,8 +167,18 @@ class _ReportPageState extends State<ReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+
       appBar: AppBar(
-        title: Text('REPORT'),
+        title: Text(
+          'Report',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+        backgroundColor: hexToColor("00ADB5"),
       ),
       body: FutureBuilder<void>(
         future: _loadUserDataFuture,

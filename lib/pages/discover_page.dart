@@ -3,6 +3,10 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 import 'package:url_launcher/url_launcher.dart';
 
+Color hexToColor(String hexCode) {
+  return Color(int.parse('FF$hexCode', radix: 16));
+}
+
 class Article {
   final String title;
   final String url;
@@ -97,13 +101,25 @@ class _DiscoverPageState extends State<DiscoverPage> {
       length: 2, // Number of tabs
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Discover'),
+          title: Text(
+            'Workout App',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+            ),
+          ),
           bottom: TabBar(
+            indicatorColor: Colors.blue, // Sets the indicator color (e.g., underline color for the selected tab)
+            labelColor: Colors.white, // Sets the color of the text in the selected tab
+            unselectedLabelColor: Colors.black, // Sets the color of the text in unselected tabs
             tabs: [
-              Tab(text: 'News'), // First tab for articles
-              Tab(text: 'Nutrition'), // Second tab for your custom content
+              Tab(text: 'Nutrition'), // First tab for articles
+              Tab(text: 'News'), // Second tab for your custom content
             ],
           ),
+          backgroundColor: hexToColor("00ADB5"),
+
         ),
         backgroundColor: Colors.white,
         body: TabBarView(
